@@ -70,6 +70,20 @@ const App = () => {
     const channel = pusher.subscribe('chat')
     channel.bind('message', async (data: IMessage) => {
       if (messages) mutateMessages([...messages, data])
+      if (dialogs)
+        mutateDialogs(
+          dialogs?.map((dialog) => {
+            if (dialog.id === data.dialog?.id) {
+              return {
+                ...dialog,
+                notification: true,
+              }
+            } else {
+              return dialog
+            }
+          }),
+          { revalidate: false }
+        )
     })
     // eslint-disable-next-line
   }, [])

@@ -1,3 +1,7 @@
 .channel {
-  @apply flex justify-center items-center mt-3 p-2 text-lg border border-black rounded-md;
+  @apply flex justify-center items-center mt-3 p-2 text-lg border border-black rounded-md relative;
+
+  .notification {
+    @apply absolute top-1 right-1;
+  }
 }

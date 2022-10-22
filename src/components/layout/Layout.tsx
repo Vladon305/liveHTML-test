@@ -47,7 +47,12 @@ const Layout: FC<Props> = ({
         <section className={styles.channels}>
           <AddChannel dialogName={newDialogName} setDialogName={setNewDialogName} addNewDialog={addNewDialog} />
           {dialogs?.map((dialog) => (
-            <Channel key={dialog.id} dialog={dialog} setCurrentDialog={setCurrentDialog} />
+            <Channel
+              key={dialog?.id}
+              dialog={dialog}
+              setCurrentDialog={setCurrentDialog}
+              isNotification={dialog?.notification ? true : false}
+            />
           ))}
         </section>
         {currentDialog && (

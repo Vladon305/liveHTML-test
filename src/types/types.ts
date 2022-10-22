@@ -6,6 +6,7 @@ export interface IUser {
 }
 
 export interface IDialog {
+  notification: boolean
   id: string
   name: string
   users: IUser[]
@@ -16,4 +17,5 @@ export interface IMessage {
   id: string
   message: string
   user: IUser
+  dialog: IDialog
 }

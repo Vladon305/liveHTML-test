@@ -11,14 +11,11 @@ const App = () => {
   const [user, setUser] = useState({} as IUser)
   const [newDialogName, setNewDialogName] = useState('')
   const [newMessage, setNewMessage] = useState('')
-  // const [messages, setMessages] = useState([] as IMessage[])
   const { data: dialogs, mutate: mutateDialogs } = useSWR<IDialog[]>('/dialog', api.get)
 
-  const [currentDialog, setCurrentDialog] = useState({} as IDialog)
+  const [currentDialog, setCurrentDialog] = useState(null as unknown as IDialog)
 
-  // const { data: messages, mutate: mutateMessages } = useSWR<IMessage[]>(`/dialog/${currentDialog.id}/message`, api.get)
-
-  const allMessages: IMessage[] = currentDialog.messages
+  const { data: messages, mutate: mutateMessages } = useSWR<IMessage[]>(`/dialog/${currentDialog?.id}/message`, api.get)
 
   const addNewDialog = async () => {
     const dialog: IDialog = await api.post(`dialog/${user.id}`, { name: newDialogName })
@@ -27,16 +24,30 @@ const App = () => {
   }
 
   const addNewMessage = async () => {
-    const message: IMessage = await api.post(`/dialog/${currentDialog.id}/message`, { name: newDialogName })
-    setCurrentDialog({ ...currentDialog, messages: [...currentDialog?.messages, message] })
-    // if (messages) mutateMessages([...messages, message], { rollbackOnError: true })
+    if (newMessage.length !== 0) {
+      const message: IMessage = await api.post(`/dialog/${currentDialog.id}/message`, {
+        message: newMessage,
+        userId: user.id,
+      })
+      setCurrentDialog({ ...currentDialog, messages: [...currentDialog?.messages, message] })
+      if (messages) mutateMessages([...messages, message], { rollbackOnError: true })
+    }
     setNewMessage('')
+  }
+
+  const deleteMessage = (messageId: string) => {
+    api.delete(`/dialog/${currentDialog.id}/message/${messageId}`)
+    if (messages)
+      mutateMessages(
+        messages.filter((message) => message.id !== messageId),
+        { rollbackOnError: true, revalidate: false }
+      )
   }
 
   useEffect(() => {
     ;(async () => {
       const cookUser = await cookieStore.get('user')
-      if (cookUser && JSON.parse(cookUser.value)) {
+      if (cookUser && cookUser.value) {
         setUser(JSON.parse(cookUser.value))
       } else {
         const user = {
@@ -44,8 +55,8 @@ const App = () => {
         }
         const createdUser = await api.post('user', user)
         cookieStore.set('user', JSON.stringify(createdUser))
+        setUser(createdUser)
       }
-      if (dialogs) setCurrentDialog(dialogs[0])
     })()
   }, [])
 
@@ -58,9 +69,7 @@ const App = () => {
 
     const channel = pusher.subscribe('chat')
     channel.bind('message', async (data: IMessage) => {
-      allMessages.push(data)
-      setCurrentDialog({ ...currentDialog, messages: [...currentDialog.messages, data] })
-      // mutateMessages([...allMessages])
+      if (messages) mutateMessages([...messages, data])
     })
     // eslint-disable-next-line
   }, [])
@@ -77,6 +86,8 @@ const App = () => {
       setNewMessage={setNewMessage}
       addNewDialog={addNewDialog}
       addNewMessage={addNewMessage}
+      messages={messages}
+      deleteMessage={deleteMessage}
     />
   )
 }

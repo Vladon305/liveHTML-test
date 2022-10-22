@@ -4,14 +4,23 @@ import Message from '../message/Message'
 import styles from './Messages.module.scss'
 
 type Props = {
-  messages: IMessage[]
+  userId: string
+  messages: IMessage[] | undefined
+  deleteMessage: (messageId: string) => void
 }
 
-const Messages: FC<Props> = ({ messages }) => {
+const Messages: FC<Props> = ({ userId, messages, deleteMessage }) => {
   return (
     <div className={styles.messages}>
       {messages?.map((message) => (
-        <Message key={message.id} message={message.message} />
+        <Message
+          key={message.id}
+          message={message.message}
+          messageId={message.id}
+          image={message?.user?.ava}
+          isMyMessage={userId === message?.user?.id ? true : false}
+          deleteMessage={deleteMessage}
+        />
       ))}
     </div>
   )

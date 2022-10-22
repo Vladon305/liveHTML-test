@@ -19,15 +19,19 @@
     .dialog {
       @apply flex flex-col w-full col-span-4 p-2 bg-gray-100 rounded-lg;
 
+      .title {
+        @apply font-bold;
+      }
+
       .messages {
         @apply flex-1;
       }
 
       .form {
-        @apply flex justify-center items-center;
+        @apply flex justify-center items-center mt-4;
 
         .input {
-          @apply border border-b-slate-600 rounded-md w-full;
+          @apply p-1 border border-b-slate-600 rounded-md w-full;
         }
 
         .button {

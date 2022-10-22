@@ -1,0 +1,7 @@
+.title {
+  @apply flex justify-between items-center font-bold;
+}
+
+.input {
+  @apply border border-black rounded-md;
+}

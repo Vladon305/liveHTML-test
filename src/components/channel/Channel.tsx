@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { IDialog } from '../../types/types'
+import styles from './Channel.module.scss'
 
 type Props = {
   dialog: IDialog
@@ -7,7 +8,11 @@ type Props = {
 }
 
 const Channels: FC<Props> = ({ setCurrentDialog, dialog }) => {
-  return <div onClick={() => setCurrentDialog(dialog)}>{dialog.name}</div>
+  return (
+    <div className={styles.channel} onClick={() => setCurrentDialog(dialog)}>
+      {dialog.name}
+    </div>
+  )
 }
 
 export default Channels

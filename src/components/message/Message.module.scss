@@ -1,0 +1,15 @@
+.my_message {
+  @apply flex justify-end items-center mr-10 my-2;
+}
+
+.message {
+  @apply flex-row-reverse ml-10 my-2 justify-start items-center;
+}
+
+.image {
+  @apply flex w-10 mx-2 rounded-full overflow-hidden;
+}
+
+.text {
+  @apply text-lg font-bold mx-2;
+}

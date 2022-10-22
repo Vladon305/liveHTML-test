@@ -15,4 +15,5 @@ export interface IDialog {
 export interface IMessage {
   id: string
   message: string
+  user: IUser
 }

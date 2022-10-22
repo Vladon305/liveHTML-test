@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Plus from '../../assets/Plus.svg'
+import styles from './AddChannel.module.scss'
 
 type Props = {
   dialogName: string
@@ -12,9 +13,8 @@ const AddChannel = ({ dialogName, setDialogName, addNewDialog }: Props) => {
 
   return (
     <div>
-      <div>Channels</div>
-      <div>
-        {addMode && <input value={dialogName} onChange={(e) => setDialogName(e.currentTarget.value)} />}
+      <div className={styles.title}>
+        <div>Channels</div>
         <div
           onClick={async () => {
             if (addMode) {
@@ -28,6 +28,11 @@ const AddChannel = ({ dialogName, setDialogName, addNewDialog }: Props) => {
         >
           <img src={Plus} alt="Add" />
         </div>
+      </div>
+      <div>
+        {addMode && (
+          <input className={styles.input} value={dialogName} onChange={(e) => setDialogName(e.currentTarget.value)} />
+        )}
       </div>
     </div>
   )

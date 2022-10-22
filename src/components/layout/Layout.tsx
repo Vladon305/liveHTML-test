@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
-import { IDialog, IUser } from '../../types/types'
+import { IDialog, IMessage, IUser } from '../../types/types'
+import { imageUrlBuilder } from '../../utils/imageUrlBuilder'
 import AddChannel from '../addChannel/AddChannel'
 import Channel from '../channel/Channel'
 import Messages from '../messages/Messages'
@@ -16,6 +17,8 @@ type Props = {
   setNewMessage: React.Dispatch<React.SetStateAction<string>>
   addNewDialog: () => Promise<void>
   addNewMessage: () => Promise<void>
+  messages: IMessage[] | undefined
+  deleteMessage: (messageId: string) => void
 }
 
 const Layout: FC<Props> = ({
@@ -29,12 +32,15 @@ const Layout: FC<Props> = ({
   setNewMessage,
   addNewDialog,
   addNewMessage,
+  messages,
+  deleteMessage,
 }) => {
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
         <div className={styles.name}>
           Your name is <p className="text-lg font-bold">{user.name}</p>
+          <img src={imageUrlBuilder(user?.ava)} alt="User" />
         </div>
       </header>
       <div className={styles.content}>
@@ -44,17 +50,24 @@ const Layout: FC<Props> = ({
             <Channel key={dialog.id} dialog={dialog} setCurrentDialog={setCurrentDialog} />
           ))}
         </section>
-        <section className={styles.dialog}>
-          <div className={styles.messages}>
-            <Messages messages={currentDialog.messages} />
-          </div>
-          <div className={styles.form}>
-            <input className={styles.input} value={newMessage} onChange={(e) => setNewMessage(e.currentTarget.value)} />
-            <button className={styles.button} onClick={() => addNewMessage()}>
-              send
-            </button>
-          </div>
-        </section>
+        {currentDialog && (
+          <section className={styles.dialog}>
+            <div className={styles.title}>Dialog</div>
+            <div className={styles.messages}>
+              <Messages messages={messages} userId={user.id} deleteMessage={deleteMessage} />
+            </div>
+            <div className={styles.form}>
+              <input
+                className={styles.input}
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.currentTarget.value)}
+              />
+              <button className={styles.button} onClick={() => addNewMessage()}>
+                send
+              </button>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   )

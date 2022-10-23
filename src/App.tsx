@@ -15,7 +15,10 @@ const App = () => {
 
   const [currentDialog, setCurrentDialog] = useState(null as unknown as IDialog)
 
-  const { data: messages, mutate: mutateMessages } = useSWR<IMessage[]>(`/dialog/${currentDialog?.id}/message`, api.get)
+  const { data: messages, mutate: mutateMessages } = useSWR<IMessage[]>(
+    currentDialog?.id ? `/dialog/${currentDialog?.id}/message` : null,
+    api.get
+  )
 
   const addNewDialog = async () => {
     const dialog: IDialog = await api.post(`dialog/${user.id}`, { name: newDialogName })

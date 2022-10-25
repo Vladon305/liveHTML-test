@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'https://live-html-test.onrender.com/',
+  baseURL: 'https://live-html-test.onrender.com/api/',
 })
 
 export const api = {

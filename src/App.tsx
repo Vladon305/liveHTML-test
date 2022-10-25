@@ -11,24 +11,24 @@ const App = () => {
   const [user, setUser] = useState({} as IUser)
   const [newDialogName, setNewDialogName] = useState('')
   const [newMessage, setNewMessage] = useState('')
-  const { data: dialogs, mutate: mutateDialogs } = useSWR<IDialog[]>('/dialog', api.get)
+  const { data: dialogs, mutate: mutateDialogs } = useSWR<IDialog[]>('/dialogs', api.get)
 
   const [currentDialog, setCurrentDialog] = useState(null as unknown as IDialog)
 
   const { data: messages, mutate: mutateMessages } = useSWR<IMessage[]>(
-    currentDialog?.id ? `/dialog/${currentDialog?.id}/message` : null,
+    currentDialog?.id ? `/dialogs/${currentDialog?.id}/messages` : null,
     api.get
   )
 
   const addNewDialog = async () => {
-    const dialog: IDialog = await api.post(`dialog/${user.id}`, { name: newDialogName })
+    const dialog: IDialog = await api.post(`dialogs/${user.id}`, { name: newDialogName })
     if (dialogs) mutateDialogs([...dialogs, dialog], { rollbackOnError: true })
     if (dialog) setCurrentDialog(dialog)
   }
 
   const addNewMessage = async () => {
     if (newMessage.length !== 0) {
-      const message: IMessage = await api.post(`/dialog/${currentDialog.id}/message`, {
+      const message: IMessage = await api.post(`/dialogs/${currentDialog.id}/messages`, {
         message: newMessage,
         userId: user.id,
       })
@@ -39,7 +39,7 @@ const App = () => {
   }
 
   const deleteMessage = (messageId: string) => {
-    api.delete(`/dialog/${currentDialog.id}/message/${messageId}`)
+    api.delete(`/dialogs/${currentDialog.id}/messages/${messageId}`)
     if (messages)
       mutateMessages(
         messages.filter((message) => message.id !== messageId),
@@ -56,7 +56,7 @@ const App = () => {
         const user = {
           name: generateName(),
         }
-        const createdUser = await api.post('user', user)
+        const createdUser = await api.post('users', user)
         cookieStore.set('user', JSON.stringify(createdUser))
         setUser(createdUser)
       }
